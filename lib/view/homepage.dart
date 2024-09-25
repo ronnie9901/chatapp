@@ -1,303 +1,223 @@
-import 'dart:ui';
-
-import 'package:chatapp/service/auth_service.dart';
-import 'package:chatapp/service/google_auth_service.dart';
-import 'package:chatapp/view/profilepage.dart';
-import 'package:chatapp/view/sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-
-
+import '../controller/themecontroller.dart';
+import '../model/userModel.dart';
+import '../service/auth_service.dart';
+import '../service/cloud_service.dart';
 import 'detailsScreen.dart';
+import 'profiile_page.dart';
+import 'profilepageuser.dart';
+
 
 class Homepage extends StatelessWidget {
-  const Homepage({super.key});
+
+  final ThemeController themeController = Get.find<ThemeController>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: ClipRect(
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 7.0, sigmaY: 7.0),
-          child: Drawer(
-            width: 300,
-            backgroundColor: Colors.black,
-            child: ListView(children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-
-                children: [
-
-                  Center(child: CircleAvatar(backgroundImage: NetworkImage('${GoogleAuth.googleAuth.auth.currentUser?.photoURL}') ,radius: 50,)),
-                  ListTile(
-                    title: Text(
-                      '    ${GoogleAuth.googleAuth.auth.currentUser!.email}',
-                      style: TextStyle(fontSize: 18, color: Colors.white70),
-                    ),
-                  ),
-                  const Divider(
-                    color: Colors.grey,
-                  ),
-                  ListTile(
-                    leading: Icon(
-                      Icons.all_inbox,
-                      color: Colors.white,
-                      size: 25,
-                    ),
-                    title: Text(
-                      'All Inboxes',
-                      style: TextStyle(fontSize: 18, color: Colors.white70),
-                    ),
-                  ),
-                  const Divider(
-                    color: Colors.grey,
-                  ),
-                  Container(
-                    width: 310,
-                    decoration: const BoxDecoration(
-                        color: Color(0xFF31303A),
-                        borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(30),
-                            bottomRight: Radius.circular(30))),
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: const ListTile(
-                      leading: Icon(
-                        Icons.inbox,
-                        color: Colors.white,
-                        size: 25,
-                      ),
-                      title: Text(
-                        'Inbox',
-                        style: TextStyle(fontSize: 18, color: Colors.white70),
-                      ),
-                    ),
-                  ),
-                  const Divider(
-                    color: Colors.grey,
-                  ),
-          
-                  const ListTile(
-                    leading: Icon(
-                      Icons.label_important_outline,
-                      color: Colors.white,
-                      size: 25,
-                    ),
-                    title: Text(
-                      'Important',
-                      style: TextStyle(fontSize: 18, color: Colors.white70),
-                    ),
-                  ),
-          
-          
-                  const ListTile(
-                    leading: Icon(
-                      Icons.report_gmailerrorred,
-                      color: Colors.white,
-                      size: 25,
-                    ),
-                    title: Text(
-                      'block List',
-                      style: TextStyle(fontSize: 18, color: Colors.white70),
-                    ),
-                  ),
-                  const ListTile(
-                    leading: Icon(
-                      Icons.delete_sweep_outlined,
-                      color: Colors.white,
-                      size: 25,
-                    ),
-                    title: Text(
-                      'Trash',
-                      style: TextStyle(fontSize: 18, color: Colors.white70),
-                    ),
-                  ),
-                  const Divider(
-                    color: Colors.white,
-                  ),
-                  const ListTile(
-                    leading: Icon(
-                      Icons.add,
-                      color: Colors.white,
-                      size: 25,
-                    ),
-                    title: Text(
-                      'Create new',
-                      style: TextStyle(fontSize: 18, color: Colors.white70),
-                    ),
-                  ),
-                  const Divider(
-                    color: Colors.white,
-                  ),
-                  const ListTile(
-                    leading: Icon(
-                      Icons.settings,
-                      color: Colors.white,
-                      size: 25,
-                    ),
-                    title: Text(
-                      'Settings',
-                      style: TextStyle(fontSize: 18, color: Colors.white70),
-                    ),
-                  ),
-                  ListTile(
-                    leading: const Icon(
-                      Icons.logout,
-                      color: Colors.white,
-                      size: 25,
-                    ),
-                    title: InkWell(
-                      onTap: () async {
-                        await AuthService.authService.signout();
-                        User? user = AuthService.authService.getCurrentUser();
-                        if (user == null) {
-                          Get.offAndToNamed('/');
-                        }
-                      },
-                      child: const Text(
-                        'Logout',
-                        style: TextStyle(fontSize: 18, color: Colors.white70),
-                      ),
-                    ),
-                  ),
-                ],
+      bottomNavigationBar: Container(
+        height: 55,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: themeController.isDarkMode.value ? Colors.grey.shade800 : Colors.grey,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            IconButton(
+              onPressed: () {},
+              icon: Icon(
+                Icons.chat,
+                color: Get.isDarkMode ? Colors.white : Colors.black,
               ),
-            ]),
-          ),
+            ),
+            IconButton(
+              onPressed: () {},
+              icon: Icon(
+                Icons.call,
+                color: Get.isDarkMode ? Colors.white : Colors.black,
+              ),
+            ),
+            IconButton(
+              onPressed: () {
+                Get.to(() => ProfiilePage());
+              },
+              icon: Icon(
+                CupertinoIcons.profile_circled,
+                color: Get.isDarkMode ? Colors.white : Colors.black,
+              ),
+            ),
+          ],
         ),
       ),
       appBar: AppBar(
-        title: Text('home page'),
+        title: Text('Message'),
+        backgroundColor: Get.isDarkMode ? Colors.brown.shade700 : Colors.brown.shade200,
         actions: [
           IconButton(
-              onPressed: () async {
-                
-                await AuthService.authService.signout();
-                User? user = AuthService.authService.getCurrentUser();
-                if (user == null) {
-                  Get.offAndToNamed('/');
-                }
-              },
-              icon: Icon(Icons.logout)),
+            onPressed: () async {
+              await AuthService.authService.signout();
+              User? user = AuthService.authService.getCurrentUser();
+              if (user == null) {
+                Get.offAndToNamed('/');
+              }
+            },
+            icon: Icon(Icons.logout),
+          ),
+          IconButton(
+            onPressed: () {
+              themeController.toggleTheme(); // Switch theme
+            },
+            icon: Icon(Icons.brightness_6),
+          ),
           PopupMenuButton<String>(
             onSelected: (value) {
-              // Handle the selection action
               print('Selected: $value');
             },
             itemBuilder: (BuildContext context) {
               return [
-                PopupMenuItem(
-                  value: 'Unread',
-                  child: Row(
-                    children: [
-                      Icon(Icons.markunread, color: Colors.black),
-                      SizedBox(width: 10),
-                      Text('Unread'),
-                    ],
-                  ),
-                ),
-                PopupMenuItem(
-                  value: 'Contacts',
-                  child: Row(
-                    children: [
-                      Icon(Icons.contacts, color: Colors.black),
-                      SizedBox(width: 10),
-                      Text('Contacts'),
-                    ],
-                  ),
-                ),
-                PopupMenuItem(
-                  value: 'Non-Contacts',
-                  child: Row(
-                    children: [
-                      Icon(Icons.person_off, color: Colors.black),
-                      SizedBox(width: 10),
-                      Text('Non-contacts'),
-                    ],
-                  ),
-                ),
-                PopupMenuItem(
-                  value: 'Groups',
-                  child: Row(
-                    children: [
-                      Icon(Icons.group, color: Colors.black),
-                      SizedBox(width: 10),
-                      Text('Groups'),
-                    ],
-                  ),
-                ),
-                PopupMenuItem(
-                  value: 'Drafts',
-                  child: Row(
-                    children: [
-                      Icon(Icons.drafts, color: Colors.black),
-                      SizedBox(width: 10),
-                      Text('Drafts'),
-                    ],
-                  ),
-                ),
+                buildPopupMenuItem('Unread', Icons.markunread),
+                buildPopupMenuItem('Contacts', Icons.contacts),
+                buildPopupMenuItem('Non-Contacts', Icons.person_off),
+                buildPopupMenuItem('Groups', Icons.group),
+                buildPopupMenuItem('Drafts', Icons.drafts),
               ];
             },
-            icon: Icon(Icons.more_vert), // Customize the icon if needed
+            icon: Icon(Icons.more_vert),
           ),
         ],
       ),
-      body: ListView.builder(
-      itemCount: 1,
-        itemBuilder: (context, index) {
+      body: FutureBuilder(
+        future: CloudFirestoreService.cloudFirestoreService.readDataAlldata(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text(snapshot.error.toString());
+          }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
 
-          return  ListTile(
-            leading: GestureDetector(
-              onTap: () async {
-               Navigator.of(context).push(MaterialPageRoute(builder: (context) => Profilepage(),));
-              },
-              child: CircleAvatar(
-                backgroundImage:
-                   NetworkImage('${GoogleAuth.googleAuth.auth.currentUser?.photoURL}'),
-                radius: 25,
-              ),
-            ),
-            title: Text(
-              '${GoogleAuth.googleAuth.auth.currentUser?.displayName}',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            subtitle: Text('hiii'),
-            trailing: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('12:00', style: TextStyle(color: Colors.grey)),
-                  Container(
-                    margin: EdgeInsets.only(top: 5),
-                    padding: EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.blueAccent,
+          List data = snapshot.data!.docs;
+          List<UserModel> userList = [];
+
+          for (var user in data) {
+            userList.add(UserModel.fromMap(user.data()));
+          }
+
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: TextField(
+                  style: TextStyle(fontSize: 10),
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black),
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Text(
-                    '1',
-                      style: TextStyle(color: Colors.white, fontSize: 12),
+                    prefixIcon: (Icon(Icons.search)),
+                    suffixIcon: IconButton(
+                      onPressed: () {},
+                      icon: Icon(CupertinoIcons.mic_fill),
+                    ),
+                    label: Text('Search'),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: BorderSide(color: Colors.black),
                     ),
                   ),
-              ],
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ChatDetailScreen()),
-              );
-            },
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: userList.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Card(
+                        child: ListTile(
+                          leading: GestureDetector(
+                            onTap: () {
+                              Get.to(() => Profilepageuser(
+                                img: userList[index].img!,
+                                name: userList[index].name!,
+                                email: userList[index].email!,
+                              ));
+                            },
+                            child: CircleAvatar(
+                              backgroundImage: NetworkImage(
+                                  '${userList[index].img}'),
+                              radius: 25,
+                            ),
+                          ),
+                          title: Text(
+                            '${userList[index].name}',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Get.isDarkMode
+                                  ? Colors.white
+                                  : Colors.black,
+                            ),
+                          ),
+                          subtitle: Text('Hi'),
+                          trailing: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('12:00', style: TextStyle(color: Colors.grey)),
+                              Container(
+                                margin: EdgeInsets.only(top: 5),
+                                padding: EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.blueAccent,
+                                ),
+                                child: Text(
+                                  '1',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 12),
+                                ),
+                              ),
+                            ],
+                          ),
+                          onTap: () {
+                            chatController.getReceiver(
+                              userList[index].email!,
+                              userList[index].name!,
+                            );
+                            Get.to(() => ChatDetailScreen(
+                              img: userList[index].img,
+                            ));
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
           );
         },
       ),
     );
   }
+
+  PopupMenuItem<String> buildPopupMenuItem(String title, IconData icon) {
+    return PopupMenuItem(
+      value: title,
+      child: Row(
+        children: [
+          Icon(icon, color: Colors.black),
+          SizedBox(width: 10),
+          Text(title),
+        ],
+      ),
+    );
+  }
 }
-
-int selectindex  =0;
-
-
-
-

@@ -43,6 +43,13 @@ dependencies:
   cloud_firestore: ^5.4.0
   image_picker: ^1.1.2
   shared_preferences: ^2.3.2
+  curved_navigation_bar: ^1.0.6
+  intl: ^0.18.0
+  sqflite: ^2.3.3+1
+  path: ^1.9.0
+  flutter_chat_ui: ^1.6.15
+  flutter_local_notifications: ^17.2.3
+
 
 
 dev_dependencies:
